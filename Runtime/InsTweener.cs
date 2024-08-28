@@ -16,7 +16,7 @@ namespace Gemity.InsTweener
     public abstract class iTween
     {
         [SerializeField] internal TweenLink _link;
-        [SerializeField] internal float _duration = 0.4f;
+        [SerializeField] protected float _duration = 0.4f;
         internal TweenLink Link => _link;
 
         public abstract Tween Play();
@@ -25,9 +25,9 @@ namespace Gemity.InsTweener
 
     public abstract class iTween<T, T1> : iTween where T : Component
     {
-        [SerializeField] internal T _component;
-        [SerializeField] internal T1 _startValue;
-        [SerializeField] internal T1 _endValue;
+        [SerializeField] protected T _component;
+        [SerializeField] protected T1 _startValue;
+        [SerializeField] protected T1 _endValue;
 
         public virtual T1 GetCurrentValue() => default;
     }
