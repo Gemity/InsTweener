@@ -1,0 +1,11 @@
+{
+  "name": "com.gemity.instweener",
+  "version": "1.0.0",
+  "displayName": "Ins Tweener",
+  "description": "Custom editor for dotween",
+  "unity": "2022.3",
+  "author": {
+    "name": "Quy77771",
+    "email": "quy.nguyenvan.77771@gmail.com"
+  }
+}
