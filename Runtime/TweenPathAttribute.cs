@@ -1,14 +1,32 @@
+using DG.Tweening;
 using System;
 using UnityEngine;
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public sealed class TweenPathAttribute : Attribute
+namespace Gemity.InsTweener
 {
-    public string Path { get; }
-
-    public TweenPathAttribute(string path)
+    [Flags]
+    public enum DrawInspector
     {
-        Path = path;
+        GetterValue = 1, PlayEditMode = 2
+    }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class TweenPathAttribute : Attribute
+    {
+        public string Path { get; }
+
+        public TweenPathAttribute(string path)
+        {
+            Path = path;
+        }
+    }
+
+    public sealed class DrawExtenInspector : Attribute
+    {
+        public DrawInspector Draw { get; }
+        public DrawExtenInspector(DrawInspector type)
+        {
+            Draw = type;
+        }
     }
 }
-

@@ -24,13 +24,15 @@ namespace Gemity.InsTweener
             if (_itweens.Count == 0)
             {
                 _itweens = Assembly.GetAssembly(typeof(iTween))
-                               .GetTypes()
-                               .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(iTween)))
-                               .ToDictionary(x => x, x => x.GetCustomAttribute<TweenPathAttribute>().Path);
+                                   .GetTypes()
+                                   .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(iTween)))
+                                   .ToDictionary(x => x, x => x.GetCustomAttribute<TweenPathAttribute>().Path);
             }
 
             if (_itweens.Count == 0)
                 return;
+
+            EditorGUI.BeginProperty(position, label, property);
 
             Type type = property.managedReferenceValue?.GetType();
             string typeName;
@@ -39,6 +41,7 @@ namespace Gemity.InsTweener
             else
                 typeName = _itweens.ContainsKey(type) ? _itweens[type] : NotSet;
 
+            
             Rect dropdownRect = position;
             dropdownRect.x += EditorGUIUtility.labelWidth + 2;
             dropdownRect.width -= EditorGUIUtility.labelWidth + 2;
@@ -75,20 +78,21 @@ namespace Gemity.InsTweener
                 {
                     Type t = itween.GetType();
                     object value = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(itween, null);
-                    t.GetField("_startValue", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(itween, value);
+                    t.GetField("_startValue", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)?.SetValue(itween, value);
                 }
 
                 if (GUILayout.Button("End value"))
                 {
                     Type t = itween.GetType();
                     object value = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(itween, null);
-                    t.GetField("_endValue", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(itween, value);
+                    t.GetField("_endValue", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)?.SetValue(itween, value);
                 }
 
                 GUILayout.EndHorizontal();
             }
 
             EditorGUI.PropertyField(position, property, label, true);
+            EditorGUI.EndProperty();
         }
     }
 }

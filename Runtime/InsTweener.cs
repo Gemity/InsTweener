@@ -20,7 +20,7 @@ namespace Gemity.InsTweener
         internal TweenLink Link => _link;
 
         public abstract Tween Play();
-        public iTween() { }
+        public iTween() {}
     }
 
     public abstract class iTween<T, T1> : iTween where T : Component
@@ -28,8 +28,7 @@ namespace Gemity.InsTweener
         [SerializeField] protected T _component;
         [SerializeField] protected T1 _startValue;
         [SerializeField] protected T1 _endValue;
-
-        public virtual T1 GetCurrentValue() => default;
+        [SerializeField] protected Ease _ease;
     }
 
 #if UNITY_EDITOR
@@ -71,10 +70,10 @@ namespace Gemity.InsTweener
 
         [SerializeField] private string _id;
         [SerializeField] private PlayAtTime _playAtTime;
-        [SerializeField] private bool _autoKill;
         [SerializeField] private bool _hideOnAwake;
         [SerializeReference] private iTween[] _iTweens;
 
+        private Tween _tween;
         public Action onComplete;
         public string Id => _id;
 
@@ -110,13 +109,18 @@ namespace Gemity.InsTweener
             if (gameObject.activeInHierarchy)
                 return;
 
+            if(_tween != null)
+            {
+                _tween.Rewind();
+                _tween.Play();
+                return;
+            }
+
             if (_iTweens.Length == 1)
-                _iTweens[0].Play().onComplete += () =>
+                _tween = _iTweens[0].Play().OnComplete(() =>
                 {
                     onComplete?.Invoke();
-                    if (_autoKill)
-                        Kill();
-                };
+                }).SetAutoKill(false);
             else
             {
                 Sequence sq = DOTween.Sequence();
@@ -128,19 +132,29 @@ namespace Gemity.InsTweener
                         sq.Append(i.Play());
                 }
 
-                sq.onComplete += () =>
+                sq.OnComplete(() =>
                 {
                     onComplete?.Invoke();
-                    if (_autoKill)
-                        Kill();
-                };
+                });
+
+                _tween = sq.SetAutoKill(false);
             }
         }
 
-        private void Kill()
+        public void PlayBackwards()
         {
-            Remove(this);
-            Destroy(this);
+            if(_tween == null)
+                return;
+
+            if (!_tween.IsComplete())
+                _tween.Complete();
+
+            _tween.PlayBackwards();
+        }
+
+        private void Reset()
+        {
+           _id = Guid.NewGuid().ToString();
         }
     }
 }
