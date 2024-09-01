@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ namespace Gemity.InsTweener
     public class iTweenerDrawer : PropertyDrawer
     {
         private Dictionary<Type, string> _itweens = new();
+        private Dictionary<Type, List<Attribute>> _itweensAttribute = new();
         private const string NotSet = "Not set";
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -27,6 +27,8 @@ namespace Gemity.InsTweener
                                    .GetTypes()
                                    .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(iTween)))
                                    .ToDictionary(x => x, x => x.GetCustomAttribute<TweenPathAttribute>().Path);
+
+                _itweensAttribute = _itweens.Keys.ToDictionary(x => x, x => x.GetCustomAttributes().ToList());
             }
 
             if (_itweens.Count == 0)
@@ -41,7 +43,7 @@ namespace Gemity.InsTweener
             else
                 typeName = _itweens.ContainsKey(type) ? _itweens[type] : NotSet;
 
-            
+
             Rect dropdownRect = position;
             dropdownRect.x += EditorGUIUtility.labelWidth + 2;
             dropdownRect.width -= EditorGUIUtility.labelWidth + 2;
@@ -61,7 +63,12 @@ namespace Gemity.InsTweener
                 {
                     _menu.AddItem(new GUIContent(tween.Value), typeName.Equals(tween.Value), () =>
                     {
-                        property.managedReferenceValue = tween.Key.GetConstructor(Type.EmptyTypes).Invoke(null);
+                        object obj = tween.Key.GetConstructor(Type.EmptyTypes).Invoke(null);
+                        MonoBehaviour mono = property.serializedObject.targetObject as MonoBehaviour;
+
+                        FieldInfo compInfo = tween.Key.GetField("_component", BindingFlags.NonPublic | BindingFlags.Instance);
+                        compInfo?.SetValue(obj, mono.GetComponent(compInfo.FieldType));
+                        property.managedReferenceValue = obj;
                         property.serializedObject.ApplyModifiedProperties();
                     });
                 }
@@ -69,26 +76,28 @@ namespace Gemity.InsTweener
                 _menu.ShowAsContext();
             }
 
-            if (!typeName.Equals(NotSet) && property.managedReferenceValue is iTween itween)
+            if (!typeName.Equals(NotSet) && property.managedReferenceValue is iTween itween && _itweensAttribute.TryGetValue(type, out var listAttr))
             {
-                GUILayout.Space(20);
-                GUILayout.BeginHorizontal();
-
-                if (GUILayout.Button("Start value"))
+                if (listAttr.FirstOrDefault(x => x is DrawExtenInspector) is DrawExtenInspector drawExten)
                 {
-                    Type t = itween.GetType();
-                    object value = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(itween, null);
-                    t.GetField("_startValue", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)?.SetValue(itween, value);
-                }
+                    GUILayout.Space(20);
+                    GUILayout.BeginHorizontal();
+                    if (drawExten.Draw.HasFlag(DrawInspector.ModifyValue))
+                    {
+                        if (GUILayout.Button("Get start value"))
+                        {
+                            object value = type.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(itween, null);
+                            type.GetField("_startValue", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)?.SetValue(itween, value);
+                        }
 
-                if (GUILayout.Button("End value"))
-                {
-                    Type t = itween.GetType();
-                    object value = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(itween, null);
-                    t.GetField("_endValue", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)?.SetValue(itween, value);
+                        if (GUILayout.Button("Get end value"))
+                        {
+                            object value = type.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(itween, null);
+                            type.GetField("_endValue", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)?.SetValue(itween, value);
+                        }
+                    }
+                    GUILayout.EndHorizontal();
                 }
-
-                GUILayout.EndHorizontal();
             }
 
             EditorGUI.PropertyField(position, property, label, true);

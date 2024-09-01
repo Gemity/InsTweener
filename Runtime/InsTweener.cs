@@ -9,7 +9,7 @@ namespace Gemity.InsTweener
 {
     internal enum TweenLink
     {
-        Join, Appear
+        Appear, Join, Await
     }
 
     [Serializable]
@@ -18,6 +18,7 @@ namespace Gemity.InsTweener
         [SerializeField] internal TweenLink _link;
         [SerializeField] protected float _duration = 0.4f;
         internal TweenLink Link => _link;
+        internal float Duration => _duration;
 
         public abstract Tween Play();
         public iTween() {}
@@ -29,6 +30,7 @@ namespace Gemity.InsTweener
         [SerializeField] protected T1 _startValue;
         [SerializeField] protected T1 _endValue;
         [SerializeField] protected Ease _ease;
+        [SerializeField] protected float _delay;
     }
 
 #if UNITY_EDITOR
@@ -74,11 +76,26 @@ namespace Gemity.InsTweener
         [SerializeReference] private iTween[] _iTweens;
 
         private Tween _tween;
+        public Tween Tween
+        {
+            get
+            {
+                if (_tween == null)
+                    CreateTween();
+
+                return _tween;
+            }
+        }
+
+        public float Duration => Tween.Duration();
+
         public Action onComplete;
         public string Id => _id;
 
         private void Awake()
         {
+            Tween.Pause();
+
             Add(this);
 
             if (_hideOnAwake)
@@ -106,18 +123,18 @@ namespace Gemity.InsTweener
 
         public void Play()
         {
-            if (gameObject.activeInHierarchy)
-                return;
+            gameObject.SetActive(true);
 
-            if(_tween != null)
-            {
-                _tween.Rewind();
-                _tween.Play();
-                return;
-            }
+            if(Tween.IsComplete())
+                Tween.Rewind();
 
+            Tween.Play();
+        }
+
+        private void CreateTween()
+        {
             if (_iTweens.Length == 1)
-                _tween = _iTweens[0].Play().OnComplete(() =>
+                _tween = _iTweens[0]?.Play().OnComplete(() =>
                 {
                     onComplete?.Invoke();
                 }).SetAutoKill(false);
@@ -126,10 +143,15 @@ namespace Gemity.InsTweener
                 Sequence sq = DOTween.Sequence();
                 foreach (var i in _iTweens)
                 {
+                    if (i == null)
+                        continue;
+
                     if (i.Link == TweenLink.Join)
                         sq.Join(i.Play());
                     else if (i.Link == TweenLink.Appear)
                         sq.Append(i.Play());
+                    else if (i.Link == TweenLink.Await)
+                        sq.AppendInterval(i.Duration);
                 }
 
                 sq.OnComplete(() =>
@@ -139,17 +161,16 @@ namespace Gemity.InsTweener
 
                 _tween = sq.SetAutoKill(false);
             }
+
+            _tween.Pause();
         }
 
         public void PlayBackwards()
         {
-            if(_tween == null)
-                return;
+            if (!Tween.IsComplete())
+                Tween.Complete();
 
-            if (!_tween.IsComplete())
-                _tween.Complete();
-
-            _tween.PlayBackwards();
+            Tween.PlayBackwards();
         }
 
         private void Reset()

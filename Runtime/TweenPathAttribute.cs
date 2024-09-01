@@ -7,7 +7,7 @@ namespace Gemity.InsTweener
     [Flags]
     public enum DrawInspector
     {
-        GetterValue = 1, PlayEditMode = 2
+        ModifyValue = 1, PlayEditMode = 2
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
@@ -27,6 +27,15 @@ namespace Gemity.InsTweener
         public DrawExtenInspector(DrawInspector type)
         {
             Draw = type;
+        }
+    }
+
+    public sealed class HiddenField : Attribute
+    {
+        public string[] FieldsName;
+        public HiddenField(params string[] fieldsName)
+        {
+            this.FieldsName = fieldsName;
         }
     }
 }
