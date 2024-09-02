@@ -11,31 +11,42 @@ namespace Gemity.InsTweener
     public class InsTweenerEditor : Editor
     {
         private InsTweener _insTweener;
+        private iTween[] _iTweens;
+
+        iTween[] ITweens
+        {
+            get
+            {
+                _iTweens ??= _insTweener.GetType().GetField("_iTweens", BindingFlags.NonPublic | BindingFlags.Instance)
+                                 .GetValue(_insTweener) as iTween[];
+
+                return _iTweens;
+            }
+        }
+
         private void Awake()
         {
             _insTweener = target as InsTweener;
+
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
-            GUILayout.BeginHorizontal();
             if (EditorApplication.isPlaying)
             {
-                PlayButton();
                 GUI.enabled = false;
-                ResetButton();
+                ModifyValue();
                 GUI.enabled = true;
+                PlayButton();
             }
             else
             {
+                ModifyValue();
                 GUI.enabled = false;
                 PlayButton();
                 GUI.enabled = true;
-                ResetButton();
             }
-            GUILayout.EndHorizontal();
         }
 
         private void PlayButton()
@@ -47,17 +58,14 @@ namespace Gemity.InsTweener
             }
         }
 
-        private void ResetButton()
+        private void ModifyValue()
         {
-            GUIContent content = new GUIContent("Reset", "Reset all component to start value");
-            if (GUILayout.Button(content))
-            {
-                var itweens = _insTweener.GetType().GetField("_iTweens", BindingFlags.NonPublic | BindingFlags.Instance)
-                                         .GetValue(_insTweener) as iTween[];
-                if (itweens == null)
-                    return;
+            GUILayout.BeginHorizontal();
 
-                foreach (var tween in itweens)
+            GUIContent getStart = new GUIContent("Get start value", "Get current value of component and set to start value");
+            if(GUILayout.Button(getStart))
+            {
+                foreach (var tween in ITweens)
                 {
                     if (tween == null)
                         continue;
@@ -65,13 +73,72 @@ namespace Gemity.InsTweener
                     Type t = tween.GetType();
 
                     var startField = t.GetField("_startValue", BindingFlags.Instance | BindingFlags.NonPublic);
-                    if(startField == null)
-                        return ;
+                    if (startField == null)
+                        return;
+
+                    var current = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(tween, null);
+                    startField.SetValue(tween, current);
+                }
+            }
+
+            GUIContent getEnd = new GUIContent("Get end value", "Get current value of component and set to end value");
+            if (GUILayout.Button(getEnd))
+            {
+                foreach (var tween in ITweens)
+                {
+                    if (tween == null)
+                        continue;
+
+                    Type t = tween.GetType();
+
+                    var endField = t.GetField("_endValue", BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (endField == null)
+                        return;
+
+                    var current = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(tween, null);
+                    endField.SetValue(tween, current);
+                }
+            }
+
+            GUIContent setStart = new GUIContent("Set start value", "Set current value of component to start value");
+            if (GUILayout.Button(setStart))
+            {
+                foreach (var tween in ITweens)
+                {
+                    if (tween == null)
+                        continue;
+
+                    Type t = tween.GetType();
+
+                    var startField = t.GetField("_startValue", BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (startField == null)
+                        return;
 
                     t.GetMethod("SetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?
                      .Invoke(tween, new object[] { startField.GetValue(tween) });
                 }
             }
+
+
+            GUIContent setEnd = new GUIContent("Set end value", "Set current value of component to end value");
+            if (GUILayout.Button(setEnd))
+            {
+                foreach (var tween in ITweens)
+                {
+                    if (tween == null)
+                        continue;
+
+                    Type t = tween.GetType();
+
+                    var endField = t.GetField("_endValue", BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (endField == null)
+                        return;
+
+                    t.GetMethod("SetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?
+                     .Invoke(tween, new object[] { endField.GetValue(tween) });
+                }
+            }
+            GUILayout.EndHorizontal();
         }
     }
 }
