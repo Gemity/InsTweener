@@ -342,20 +342,42 @@ namespace Gemity.InsTweener
 
     #region SpriteRenderer
     [TweenPath("SpriteRendere/DoColor")]
-    public class SpriteRendererColorTween : iTween<SpriteRenderer, Color>
+    public class SpriteRendererColorTween : iTween<SpriteRenderer, Color>, IModifyValue<Color>
     {
+        public Color GetCurrentValue()
+        {
+            return _component.color;
+        }
+
         public override Tween Play()
         {
             return _component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
+
+        public void SetCurrentValue(Color value)
+        {
+            _component.color = value;
+        }
     }
 
     [TweenPath("SpriteRendere/DOFade")]
-    public class SpriteRendererFadeTween : iTween<SpriteRenderer, float>
+    public class SpriteRendererFadeTween : iTween<SpriteRenderer, float>, IModifyValue<float>
     {
+        public float GetCurrentValue()
+        {
+            return _component.color.a;
+        }
+
         public override Tween Play()
         {
             return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            Color c = _component.color;
+            c.a = value;
+            _component.color = c;
         }
     }
     #endregion
@@ -426,31 +448,63 @@ namespace Gemity.InsTweener
 
     #region Image
     [TweenPath("Image/DoColor")]
-    public class ImageColorTween : iTween<SpriteRenderer, Color>
+    public class ImageColorTween : iTween<SpriteRenderer, Color>, IModifyValue<Color>
     {
+        public Color GetCurrentValue()
+        {
+            return _component.color;
+        }
+
         public override Tween Play()
         {
             return _component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
+
+        public void SetCurrentValue(Color value)
+        {
+            _component.color = value;
+        }
     }
 
     [TweenPath("Image/DOFade")]
-    public class ImageFadeTween : iTween<SpriteRenderer, float>
+    public class ImageFadeTween : iTween<SpriteRenderer, float>, IModifyValue<float>
     {
+        public float GetCurrentValue()
+        {
+            return _component.color.a;
+        }
+
         public override Tween Play()
         {
             return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            Color c = _component.color;
+            c.a = value;
+            _component.color = c;
         }
     }
     #endregion
 
     #region Other
-    [TweenPath("CanvasGroup/DoColor")]
-    public class CanvasGroupFadeTween : iTween<CanvasGroup, float>
+    [TweenPath("CanvasGroup/DoFade")]
+    public class CanvasGroupFadeTween : iTween<CanvasGroup, float>, IModifyValue<float>
     {
+        public float GetCurrentValue()
+        {
+            return _component.alpha;
+        }
+
         public override Tween Play()
         {
             return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            _component.alpha = value;
         }
     }
 

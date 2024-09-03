@@ -88,9 +88,10 @@ namespace Gemity.InsTweener
         }
 
         public float Duration => Tween.Duration();
-
-        public Action onComplete;
         public string Id => _id;
+
+        [Space(20)]
+        public UnityEngine.Events.UnityEvent onComplete;
 
         private void Awake()
         {

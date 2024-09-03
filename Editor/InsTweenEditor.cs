@@ -33,6 +33,7 @@ namespace Gemity.InsTweener
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
             if (EditorApplication.isPlaying)
             {
                 GUI.enabled = false;
@@ -60,10 +61,10 @@ namespace Gemity.InsTweener
 
         private void ModifyValue()
         {
+            EditorGUILayout.Space(20);
             GUILayout.BeginHorizontal();
-
-            GUIContent getStart = new GUIContent("Get start value", "Get current value of component and set to start value");
-            if(GUILayout.Button(getStart))
+            GUIContent getStart = new GUIContent("Get start", "Get current value of component and set to start value");
+            if(GUILayout.Button(getStart, GUILayout.ExpandWidth(true)))
             {
                 foreach (var tween in ITweens)
                 {
@@ -81,8 +82,8 @@ namespace Gemity.InsTweener
                 }
             }
 
-            GUIContent getEnd = new GUIContent("Get end value", "Get current value of component and set to end value");
-            if (GUILayout.Button(getEnd))
+            GUIContent getEnd = new GUIContent("Get end", "Get current value of component and set to end value");
+            if (GUILayout.Button(getEnd, GUILayout.ExpandWidth(true)))
             {
                 foreach (var tween in ITweens)
                 {
@@ -100,8 +101,8 @@ namespace Gemity.InsTweener
                 }
             }
 
-            GUIContent setStart = new GUIContent("Set start value", "Set current value of component to start value");
-            if (GUILayout.Button(setStart))
+            GUIContent setStart = new GUIContent("Set start", "Set current value of component to start value");
+            if (GUILayout.Button(setStart, GUILayout.ExpandWidth(true)))
             {
                 foreach (var tween in ITweens)
                 {
@@ -120,8 +121,8 @@ namespace Gemity.InsTweener
             }
 
 
-            GUIContent setEnd = new GUIContent("Set end value", "Set current value of component to end value");
-            if (GUILayout.Button(setEnd))
+            GUIContent setEnd = new GUIContent("Set end", "Set current value of component to end value");
+            if (GUILayout.Button(setEnd, GUILayout.ExpandWidth(true)))
             {
                 foreach (var tween in ITweens)
                 {
