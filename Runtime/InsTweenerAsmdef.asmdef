@@ -2,7 +2,7 @@
     "name": "InsTweener",
     "rootNamespace": "",
     "references": [
-        "GUID:9eeed6f3d94f2c0478dbe9d89b82df6f"
+        "DOTween.Modules"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
