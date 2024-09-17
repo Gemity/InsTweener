@@ -448,7 +448,7 @@ namespace Gemity.InsTweener
 
     #region Image
     [TweenPath("Image/DoColor")]
-    public class ImageColorTween : iTween<SpriteRenderer, Color>, IModifyValue<Color>
+    public class ImageColorTween : iTween<Image, Color>, IModifyValue<Color>
     {
         public Color GetCurrentValue()
         {
@@ -467,7 +467,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Image/DOFade")]
-    public class ImageFadeTween : iTween<SpriteRenderer, float>, IModifyValue<float>
+    public class ImageFadeTween : iTween<Image, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
