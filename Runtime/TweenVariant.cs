@@ -476,7 +476,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return _component.material.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
 
         public void SetCurrentValue(float value)
@@ -499,7 +499,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return _component.material.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
 
         public void SetCurrentValue(float value)
