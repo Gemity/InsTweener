@@ -140,12 +140,12 @@ namespace Gemity.InsTweener
     {
         public float GetCurrentValue()
         {
-            return _component.position.y;
+            return _component.localPosition.y;
         }
 
         public override Tween Play()
         {
-            return _component.DOMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return _component.DOLocalMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
 
         public void SetCurrentValue(float value)
@@ -160,12 +160,12 @@ namespace Gemity.InsTweener
     {
         public float GetCurrentValue()
         {
-            return _component.position.z;
+            return _component.localPosition.z;
         }
 
         public override Tween Play()
         {
-            return _component.DOMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return _component.DOLocalMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
 
         public void SetCurrentValue(float value)
