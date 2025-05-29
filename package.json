@@ -1,6 +1,6 @@
 {
   "name": "com.gemity.instweener",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "displayName": "Ins Tweener",
   "description": "Custom editor for dotween",
   "unity": "2022.3",
