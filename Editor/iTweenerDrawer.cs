@@ -26,7 +26,9 @@ namespace Gemity.InsTweener
                 _itweens = Assembly.GetAssembly(typeof(iTween))
                                    .GetTypes()
                                    .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(iTween)))
-                                   .ToDictionary(x => x, x => x.GetCustomAttribute<TweenPathAttribute>().Path);
+                                   .Select(t => new { Type = t, Attr = t.GetCustomAttribute<TweenPathAttribute>() })
+                                   .Where(x => x.Attr != null)
+                                   .ToDictionary(x => x.Type, x => x.Attr.Path);
 
                 _itweensAttribute = _itweens.Keys.ToDictionary(x => x, x => x.GetCustomAttributes().ToList());
             }

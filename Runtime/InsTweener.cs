@@ -40,7 +40,7 @@ namespace Gemity.InsTweener
     {
         internal enum PlayAtTime
         {
-            Manual, Awake, OnEnable, Start
+            Manual, OnEnable, Start
         }
 
         #region Static field, method
@@ -72,7 +72,6 @@ namespace Gemity.InsTweener
 
         [SerializeField] private string _id;
         [SerializeField] private PlayAtTime _playAtTime;
-        [SerializeField] private bool _hideOnAwake;
         [SerializeReference] private iTween[] _iTweens;
 
         private Tween _tween;
@@ -90,19 +89,13 @@ namespace Gemity.InsTweener
         public float Duration => Tween.Duration();
         public string Id => _id;
 
+
         [Space(20)]
         public UnityEngine.Events.UnityEvent onComplete;
 
         private void Awake()
         {
-            Tween.Pause();
-
             Add(this);
-
-            if (_hideOnAwake)
-                gameObject.SetActive(false);
-            else if (_playAtTime == PlayAtTime.Awake)
-                Play();
         }
 
         private void OnEnable()
@@ -124,8 +117,6 @@ namespace Gemity.InsTweener
 
         public void Play()
         {
-            gameObject.SetActive(true);
-
             if(Tween.IsComplete())
                 Tween.Rewind();
 
@@ -135,36 +126,40 @@ namespace Gemity.InsTweener
         private void CreateTween()
         {
             if (_iTweens.Length == 1)
-                _tween = _iTweens[0]?.Play().OnComplete(() =>
+            {
+                var t = _iTweens[0];
+                if (t == null) { _tween = DOTween.Sequence().Pause().SetAutoKill(false); return; }
+
+                if (t.Link == TweenLink.Await)
                 {
-                    onComplete?.Invoke();
-                }).SetAutoKill(false);
+                    var sq = DOTween.Sequence().AppendInterval(t.Duration);
+                    _tween = sq.OnComplete(() => onComplete?.Invoke()).SetAutoKill(false);
+                }
+                else
+                {
+                    var tw = t.Play();
+                    if (tw == null) { _tween = DOTween.Sequence().Pause().SetAutoKill(false); return; }
+                    _tween = tw.OnComplete(() => onComplete?.Invoke()).SetAutoKill(false);
+                }
+            }
             else
             {
                 Sequence sq = DOTween.Sequence();
+                bool anyStep = false;
                 foreach (var i in _iTweens)
                 {
-                    if (i == null)
-                        continue;
-
-                    if (i.Link == TweenLink.Join)
-                        sq.Join(i.Play());
-                    else if (i.Link == TweenLink.Appear)
-                        sq.Append(i.Play());
-                    else if (i.Link == TweenLink.Await)
-                        sq.AppendInterval(i.Duration);
+                    if (i == null) continue;
+                    anyStep = true;
+                    if (i.Link == TweenLink.Join) sq.Join(i.Play());
+                    else if (i.Link == TweenLink.Appear) sq.Append(i.Play());
+                    else if (i.Link == TweenLink.Await) sq.AppendInterval(i.Duration);
                 }
-
-                sq.OnComplete(() =>
-                {
-                    onComplete?.Invoke();
-                });
-
-                _tween = sq.SetAutoKill(false);
+                if (!anyStep) { sq.AppendInterval(0f); }
+                _tween = sq.OnComplete(() => onComplete?.Invoke()).SetAutoKill(false);
             }
-
             _tween.Pause();
         }
+
 
         public void PlayBackwards()
         {

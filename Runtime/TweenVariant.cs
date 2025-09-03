@@ -15,8 +15,7 @@ namespace Gemity.InsTweener
 
     #region Transform/Position
     [TweenPath("Transform/Global/DoMove")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoMoveTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
+    public class TransformDoMoveTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
     {
         public Vector3 GetCurrentValue()
         {
@@ -35,8 +34,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Global/DoMoveX")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoMoveXTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoMoveXTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -55,8 +53,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Global/DoMoveY")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoMoveYTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoMoveYTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -75,8 +72,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Global/DoMoveZ")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoMoveZTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoMoveZTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -94,9 +90,17 @@ namespace Gemity.InsTweener
         }
     }
 
+    [TweenPath("Transform/Global/DoMoveToTarget")]
+    public class TransformDoMoveToTargetTween : iTween<Transform, Transform>
+    {
+        public override Tween Play()
+        {
+            return _component.DOMove(_endValue.transform.position, _duration).SetEase(_ease).SetDelay(_delay);
+        }
+    }
+
     [TweenPath("Transform/Local/DoLocalMove")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoLocalMoveTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
+    public class TransformDoLocalMoveTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
     {
         public Vector3 GetCurrentValue()
         {
@@ -115,8 +119,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DoLocalMoveX")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoLocalMoveXTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoLocalMoveXTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -135,17 +138,16 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DoLocalMoveY")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromLocalDoMoveYTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformLocalDoMoveYTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
-            return _component.position.y;
+            return _component.localPosition.y;
         }
 
         public override Tween Play()
         {
-            return _component.DOMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return _component.DOLocalMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
 
         public void SetCurrentValue(float value)
@@ -155,17 +157,16 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DoLocalMoveZ")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoLocalMoveZTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoLocalMoveZTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
-            return _component.position.z;
+            return _component.localPosition.z;
         }
 
         public override Tween Play()
         {
-            return _component.DOMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return _component.DOLocalMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
         }
 
         public void SetCurrentValue(float value)
@@ -178,7 +179,6 @@ namespace Gemity.InsTweener
     #region Transform/Rotate
 
     [TweenPath("Transform/Global/DORotate")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class TransformDORotateTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
     {
         public Vector3 GetCurrentValue()
@@ -198,7 +198,6 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Global/DORotateQuaternion")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class TransformDORotateQuaternionTween : iTween<Transform, Quaternion>, IModifyValue<Quaternion>
     {
         public Quaternion GetCurrentValue()
@@ -218,7 +217,6 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DOLocalRotate")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class TransformDOLocalRotateTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
     {
         public Vector3 GetCurrentValue()
@@ -238,7 +236,6 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DOLocalRotateQuaternion")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class TransformDOLocalRotateQuaternionTween : iTween<Transform, Quaternion>, IModifyValue<Quaternion>
     {
         public Quaternion GetCurrentValue()
@@ -260,8 +257,7 @@ namespace Gemity.InsTweener
 
     #region Transform/Scale
     [TweenPath("Transform/Local/DoScale")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoScaleTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
+    public class TransformDoScaleTween : iTween<Transform, Vector3>, IModifyValue<Vector3>
     {
         public Vector3 GetCurrentValue()
         {
@@ -280,8 +276,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DoScaleX")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoScaleXTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoScaleXTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -300,8 +295,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DoScaleY")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoScaleYTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoScaleYTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -320,8 +314,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Transform/Local/DoScaleZ")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
-    public class TransfromDoScaleZTween : iTween<Transform, float>, IModifyValue<float>
+    public class TransformDoScaleZTween : iTween<Transform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
@@ -341,7 +334,7 @@ namespace Gemity.InsTweener
     #endregion
 
     #region SpriteRenderer
-    [TweenPath("SpriteRendere/DoColor")]
+    [TweenPath("SpriteRenderer/DoColor")]
     public class SpriteRendererColorTween : iTween<SpriteRenderer, Color>, IModifyValue<Color>
     {
         public Color GetCurrentValue()
@@ -360,7 +353,7 @@ namespace Gemity.InsTweener
         }
     }
 
-    [TweenPath("SpriteRendere/DOFade")]
+    [TweenPath("SpriteRenderer/DOFade")]
     public class SpriteRendererFadeTween : iTween<SpriteRenderer, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
@@ -384,7 +377,6 @@ namespace Gemity.InsTweener
 
     #region RectTransform
     [TweenPath("RectTransform/DOAnchorPos")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class RectTransformAnchorPos : iTween<RectTransform, Vector2>, IModifyValue<Vector2>
     {
         public Vector2 GetCurrentValue()
@@ -404,7 +396,6 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("RectTransform/DOAnchorPosX")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class RectTransformAnchorPosX : iTween<RectTransform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
@@ -425,7 +416,6 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("RectTransform/DOAnchorPosY")]
-    [DrawExtenInspector(DrawInspector.ModifyValue | DrawInspector.PlayEditMode)]
     public class RectTransformAnchorPosY : iTween<RectTransform, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
@@ -448,7 +438,7 @@ namespace Gemity.InsTweener
 
     #region Image
     [TweenPath("Image/DoColor")]
-    public class ImageColorTween : iTween<SpriteRenderer, Color>, IModifyValue<Color>
+    public class ImageColorTween : iTween<Image, Color>, IModifyValue<Color>
     {
         public Color GetCurrentValue()
         {
@@ -467,7 +457,7 @@ namespace Gemity.InsTweener
     }
 
     [TweenPath("Image/DOFade")]
-    public class ImageFadeTween : iTween<SpriteRenderer, float>, IModifyValue<float>
+    public class ImageFadeTween : iTween<Image, float>, IModifyValue<float>
     {
         public float GetCurrentValue()
         {
