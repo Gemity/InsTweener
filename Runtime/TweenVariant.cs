@@ -24,7 +24,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOMove(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOMove(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Vector3 value)
@@ -43,7 +43,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOMoveX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOMoveX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -62,7 +62,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -81,12 +81,12 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
         {
-            _component.position = new Vector3(_component.position.x, _component.position.y,value);
+            _component.position = new Vector3(_component.position.x, _component.position.y, value);
         }
     }
 
@@ -95,7 +95,8 @@ namespace Gemity.InsTweener
     {
         public override Tween Play()
         {
-            return _component.DOMove(_endValue.transform.position, _duration).SetEase(_ease).SetDelay(_delay);
+            if (_endValue == null) return null;
+            return ApplyCommon(_component.DOMove(_endValue.transform.position, _duration).SetEase(_ease).SetDelay(_delay));
         }
     }
 
@@ -109,7 +110,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOLocalMove(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOLocalMove(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Vector3 value)
@@ -128,7 +129,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOLocalMoveX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOLocalMoveX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -147,7 +148,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOLocalMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOLocalMoveY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -166,7 +167,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOLocalMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOLocalMoveZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -188,7 +189,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DORotate(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DORotate(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Vector3 value)
@@ -207,7 +208,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DORotateQuaternion(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DORotateQuaternion(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Quaternion value)
@@ -226,7 +227,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOLocalRotate(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOLocalRotate(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Vector3 value)
@@ -245,7 +246,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOLocalRotateQuaternion(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOLocalRotateQuaternion(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Quaternion value)
@@ -266,7 +267,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOScale(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOScale(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Vector3 value)
@@ -285,7 +286,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOScaleX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOScaleX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -304,7 +305,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOScaleY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOScaleY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -323,7 +324,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOScaleZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOScaleZ(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -344,7 +345,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Color value)
@@ -363,7 +364,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -386,7 +387,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOAnchorPos(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOAnchorPos(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Vector2 value)
@@ -405,8 +406,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            _component.anchoredPosition = new Vector2(_startValue, _component.anchoredPosition.y);
-            return _component.DOAnchorPosX(_endValue, _duration).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOAnchorPosX(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -425,14 +425,13 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            _component.anchoredPosition = new Vector2(_component.anchoredPosition.x, _startValue);
-            return _component.DOAnchorPosY(_endValue, _duration).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOAnchorPosY(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
+
         public void SetCurrentValue(float value)
         {
             _component.anchoredPosition = new Vector2(_component.anchoredPosition.x, value);
         }
-
     }
     #endregion
 
@@ -447,7 +446,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(Color value)
@@ -466,7 +465,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -489,7 +488,7 @@ namespace Gemity.InsTweener
 
         public override Tween Play()
         {
-            return _component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay);
+            return ApplyCommon(_component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
         }
 
         public void SetCurrentValue(float value)
@@ -506,5 +505,181 @@ namespace Gemity.InsTweener
             return null;
         }
     }
+    #endregion
+
+    #region AudioSource
+    [TweenPath("AudioSource/DOFade")]
+    public class AudioSourceFadeTween : iTween<AudioSource, float>, IModifyValue<float>
+    {
+        public float GetCurrentValue()
+        {
+            return _component.volume;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            _component.volume = value;
+        }
+    }
+
+    [TweenPath("AudioSource/DOPitch")]
+    public class AudioSourcePitchTween : iTween<AudioSource, float>, IModifyValue<float>
+    {
+        public float GetCurrentValue()
+        {
+            return _component.pitch;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOPitch(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            _component.pitch = value;
+        }
+    }
+    #endregion
+
+    #region Camera
+    [TweenPath("Camera/DOFieldOfView")]
+    public class CameraFieldOfViewTween : iTween<Camera, float>, IModifyValue<float>
+    {
+        public float GetCurrentValue()
+        {
+            return _component.fieldOfView;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOFieldOfView(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            _component.fieldOfView = value;
+        }
+    }
+
+    [TweenPath("Camera/DOColor")]
+    public class CameraColorTween : iTween<Camera, Color>, IModifyValue<Color>
+    {
+        public Color GetCurrentValue()
+        {
+            return _component.backgroundColor;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(Color value)
+        {
+            _component.backgroundColor = value;
+        }
+    }
+    #endregion
+
+    #region Renderer/Material
+    [TweenPath("Renderer/DOColor")]
+    public class RendererColorTween : iTween<Renderer, Color>, IModifyValue<Color>
+    {
+        public Color GetCurrentValue()
+        {
+            return _component.sharedMaterial != null ? _component.sharedMaterial.color : Color.white;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.material.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(Color value)
+        {
+            _component.sharedMaterial.color = value;
+        }
+    }
+
+    [TweenPath("Renderer/DOFade")]
+    public class RendererFadeTween : iTween<Renderer, float>, IModifyValue<float>
+    {
+        public float GetCurrentValue()
+        {
+            return _component.sharedMaterial != null ? _component.sharedMaterial.color.a : 1f;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.material.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            if (_component.sharedMaterial == null) return;
+            Color c = _component.sharedMaterial.color;
+            c.a = value;
+            _component.sharedMaterial.color = c;
+        }
+    }
+    #endregion
+
+    #region TextMeshPro
+#if TMP_PRESENT
+    [TweenPath("TextMeshPro/DOColor")]
+    public class TMPTextColorTween : iTween<TMPro.TMP_Text, Color>, IModifyValue<Color>
+    {
+        public Color GetCurrentValue()
+        {
+            return _component.color;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOColor(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(Color value)
+        {
+            _component.color = value;
+        }
+    }
+
+    [TweenPath("TextMeshPro/DOFade")]
+    public class TMPTextFadeTween : iTween<TMPro.TMP_Text, float>, IModifyValue<float>
+    {
+        public float GetCurrentValue()
+        {
+            return _component.color.a;
+        }
+
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOFade(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+
+        public void SetCurrentValue(float value)
+        {
+            Color c = _component.color;
+            c.a = value;
+            _component.color = c;
+        }
+    }
+
+    [TweenPath("TextMeshPro/DOText")]
+    public class TMPTextDoTextTween : iTween<TMPro.TMP_Text, string>
+    {
+        public override Tween Play()
+        {
+            return ApplyCommon(_component.DOText(_endValue, _duration).From(_startValue).SetEase(_ease).SetDelay(_delay));
+        }
+    }
+#endif
     #endregion
 }

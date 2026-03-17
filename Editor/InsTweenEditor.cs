@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 using System;
 using System.Reflection;
 
@@ -12,12 +13,14 @@ namespace Gemity.InsTweener
     {
         private InsTweener _insTweener;
         private iTween[] _iTweens;
+        private ReorderableList _reorderableList;
+        private SerializedProperty _iTweensProp;
 
         iTween[] ITweens
         {
             get
             {
-                _iTweens ??= _insTweener.GetType().GetField("_iTweens", BindingFlags.NonPublic | BindingFlags.Instance)
+                _iTweens = _insTweener.GetType().GetField("_iTweens", BindingFlags.NonPublic | BindingFlags.Instance)
                                  .GetValue(_insTweener) as iTween[];
 
                 return _iTweens;
@@ -27,12 +30,62 @@ namespace Gemity.InsTweener
         private void Awake()
         {
             _insTweener = target as InsTweener;
+        }
 
+        private void OnEnable()
+        {
+            _insTweener = target as InsTweener;
+            _iTweensProp = serializedObject.FindProperty("_iTweens");
+            SetupReorderableList();
+        }
+
+        private void SetupReorderableList()
+        {
+            _reorderableList = new ReorderableList(serializedObject, _iTweensProp, true, true, true, true);
+
+            _reorderableList.drawHeaderCallback = rect =>
+            {
+                EditorGUI.LabelField(rect, $"Tweens ({_iTweensProp.arraySize})");
+            };
+
+            _reorderableList.drawElementCallback = (rect, index, isActive, isFocused) =>
+            {
+                if (index >= _iTweensProp.arraySize) return;
+                var element = _iTweensProp.GetArrayElementAtIndex(index);
+                rect.y += 2;
+                rect.height = EditorGUI.GetPropertyHeight(element);
+                EditorGUI.PropertyField(rect, element, new GUIContent($"Tween {index}"), true);
+            };
+
+            _reorderableList.elementHeightCallback = index =>
+            {
+                if (index >= _iTweensProp.arraySize) return EditorGUIUtility.singleLineHeight;
+                var element = _iTweensProp.GetArrayElementAtIndex(index);
+                return EditorGUI.GetPropertyHeight(element) + 4;
+            };
+
+            // Add: always create null entry (no copy)
+            _reorderableList.onAddCallback = list =>
+            {
+                int newIndex = _iTweensProp.arraySize;
+                _iTweensProp.arraySize++;
+                var newElement = _iTweensProp.GetArrayElementAtIndex(newIndex);
+                newElement.managedReferenceValue = null;
+                serializedObject.ApplyModifiedProperties();
+            };
         }
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            serializedObject.Update();
+
+            // Draw all properties except _iTweens (we handle it with ReorderableList)
+            DrawPropertiesExcluding(serializedObject, "_iTweens");
+
+            EditorGUILayout.Space(5);
+            _reorderableList.DoLayoutList();
+
+            serializedObject.ApplyModifiedProperties();
 
             if (EditorApplication.isPlaying)
             {
@@ -44,9 +97,7 @@ namespace Gemity.InsTweener
             else
             {
                 ModifyValue();
-                GUI.enabled = false;
-                PlayButton();
-                GUI.enabled = true;
+                PreviewButton();
             }
         }
 
@@ -56,6 +107,27 @@ namespace Gemity.InsTweener
             {
                 _insTweener.GetType().GetMethod("CreateTween", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(_insTweener, null);
                 _insTweener.Play();
+            }
+        }
+
+        private void PreviewButton()
+        {
+            EditorGUILayout.Space(5);
+            bool isPreviewing = EditModePreview.IsPreviewing && EditModePreview.CurrentTarget == _insTweener;
+
+            if (isPreviewing)
+            {
+                GUI.backgroundColor = new Color(1f, 0.5f, 0.5f);
+                if (GUILayout.Button("Stop Preview"))
+                    EditModePreview.StopPreview();
+                GUI.backgroundColor = Color.white;
+            }
+            else
+            {
+                GUI.backgroundColor = new Color(0.5f, 1f, 0.5f);
+                if (GUILayout.Button("Preview"))
+                    EditModePreview.StartPreview(_insTweener);
+                GUI.backgroundColor = Color.white;
             }
         }
 
@@ -99,7 +171,7 @@ namespace Gemity.InsTweener
 
                     var endField = t.GetField("_endValue", BindingFlags.Instance | BindingFlags.NonPublic);
                     if (endField == null)
-                        return;
+                        continue;
 
                     var current = t.GetMethod("GetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?.Invoke(tween, null);
                     endField.SetValue(tween, current);
@@ -120,7 +192,7 @@ namespace Gemity.InsTweener
 
                     var startField = t.GetField("_startValue", BindingFlags.Instance | BindingFlags.NonPublic);
                     if (startField == null)
-                        return;
+                        continue;
 
                     t.GetMethod("SetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?
                      .Invoke(tween, new object[] { startField.GetValue(tween) });
@@ -140,7 +212,7 @@ namespace Gemity.InsTweener
 
                     var endField = t.GetField("_endValue", BindingFlags.Instance | BindingFlags.NonPublic);
                     if (endField == null)
-                        return;
+                        continue;
 
                     t.GetMethod("SetCurrentValue", BindingFlags.Public | BindingFlags.Instance)?
                      .Invoke(tween, new object[] { endField.GetValue(tween) });

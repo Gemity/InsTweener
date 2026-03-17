@@ -17,11 +17,24 @@ namespace Gemity.InsTweener
     {
         [SerializeField] internal TweenLink _link;
         [SerializeField] protected float _duration = 0.4f;
+        [SerializeField] protected int _loopCount = 0;
+        [SerializeField] protected LoopType _loopType = LoopType.Restart;
+        [SerializeField] protected bool _isRelative = false;
         internal TweenLink Link => _link;
         internal float Duration => _duration;
 
         public abstract Tween Play();
         public iTween() {}
+
+        protected Tween ApplyCommon(Tween tween)
+        {
+            if (tween == null) return null;
+            if (_loopCount != 0)
+                tween.SetLoops(_loopCount, _loopType);
+            if (_isRelative)
+                tween.SetRelative(true);
+            return tween;
+        }
     }
 
     public abstract class iTween<T, T1> : iTween where T : Component
@@ -45,6 +58,12 @@ namespace Gemity.InsTweener
 
         #region Static field, method
         private static Dictionary<string, InsTweener> _allInsTweens = new();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            _allInsTweens = new Dictionary<string, InsTweener>();
+        }
         internal static void Add(InsTweener insTweener)
         {
             if (!_allInsTweens.ContainsKey(insTweener.Id))
@@ -72,6 +91,8 @@ namespace Gemity.InsTweener
 
         [SerializeField] private string _id;
         [SerializeField] private PlayAtTime _playAtTime;
+        [SerializeField] private int _sequenceLoopCount = 0;
+        [SerializeField] private LoopType _sequenceLoopType = LoopType.Restart;
         [SerializeReference] private iTween[] _iTweens;
 
         private Tween _tween;
@@ -157,6 +178,8 @@ namespace Gemity.InsTweener
                 if (!anyStep) { sq.AppendInterval(0f); }
                 _tween = sq.OnComplete(() => onComplete?.Invoke()).SetAutoKill(false);
             }
+            if (_sequenceLoopCount != 0)
+                _tween.SetLoops(_sequenceLoopCount, _sequenceLoopType);
             _tween.Pause();
         }
 
